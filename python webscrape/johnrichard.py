@@ -6,7 +6,7 @@ import urllib.request
 from lxml import html
 import time
 
-scrape_urls = "url-lists/johnrichard-urls.csv"
+scrape_urls = r"Classic-Imports-and-Design\python webscrape\url-lists\johnrichard-urls.csv"
 print('Name of Output CSV File')
 filename = input()
 
@@ -14,7 +14,7 @@ file = open(filename+'.csv', 'w')
 file.truncate()
 writer = csv.writer(file)
 
-driver = webdriver.Chrome("chromedriver.exe")
+driver = webdriver.Chrome("Classic-Imports-and-Design\python webscrape\chromedriver.exe")
 
 #login
 driver.get('https://www.johnrichard.com')
@@ -27,7 +27,7 @@ with open(scrape_urls) as f:
 
 for product in scrape_urls:
     print(product[0])
-    print(product[1])
+    #print(product[1])
     row = 1
     data = []
     print("Establishing connection to > " + product[0])
@@ -44,17 +44,20 @@ for product in scrape_urls:
     #Product Title
     data.append(soup.find("h2", class_="ng-binding").text)
     #Brand
-    data.append("John Richard")
+    #data.append("John Richard")
     #Category
-    data.append(product[1])
+    #data.append(product[1])
     #Wholesale Price
-    data.append(tree.xpath("/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div[1]/div[2]/shopping-one-up-heading/div[2]/div[1]/p/span/span")[0].text.lstrip("$"))
+    #data.append(tree.xpath("/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div[1]/div[2]/shopping-one-up-heading/div[2]/div[1]/p/span/span")[0].text.lstrip("$"))
     #Item Description
-    description = tree.xpath("/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div[1]/div[2]/shopping-one-up-heading/div[3]/div/div/p[2]/text()")[0]
-    data.append(description)
+    #description = tree.xpath("/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div[1]/div[2]/shopping-one-up-heading/div[3]/div/div/p[2]/text()")[0]
+    #data.append(description)
     #Dimensions
-    dimensions = tree.xpath("/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div[1]/div[2]/div/shopping-one-up-details/product-more-info/panel/div/div/div/div/div[2]/product-dimensions/datum[1]/div/span[1]/span")[0].text
-    data.append(dimensions)
+    #dimensions = tree.xpath("/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div[1]/div[2]/div/shopping-one-up-details/product-more-info/panel/div/div/div/div/div[2]/product-dimensions/datum[1]/div/span[1]/span")[0].text
+    #data.append(dimensions)
+
+    #stock
+    status = tree.xpath('/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div[1]/div[2]/div/shopping-one-up-details/product-more-info/div/product-availability/panel/div/div/div/div')[0].text
 
     #Images
     # print('Downloading product images...')

@@ -19,6 +19,7 @@ convert = {
     'Tables > Game Tables' : 'Decoration > Home Accents > Game Tables',
     'Tables > Occasional Tables' : 'Furniture > Living > Tables > Occasional Tables',
     'Credenzas & Sideboards' : 'Furniture > Dining > Credenzas, Sideboards, & Buffets',
+    'Furniture > Dining > Credenzas, Sideboards, & Buffets' : 'Credenzas Sideboards & Buffets',
     'Seating > Bar Stools' : 'Furniture > Dining > Barstools & Counterstools',
     'Seating > Benches & Ottomans' : 'Furniture > Living > Benches & Ottomans',
     'Seating > Chaises & Settees' : 'Furniture > Living > Chaises & Settees',
@@ -72,9 +73,9 @@ convert = {
 }
 new_cats = []
 cat_col = 3
-filename = 'Catagory Software\OLD-CSVS\XCELLA.csv'
+filename = 'Classic-Imports-and-Design\Catagory Software\OLD-CSVS\input.csv'
 
-with open(filename, errors='ignore') as csv_file:
+with open(filename) as csv_file:
     csv_reader = csv.reader(csv_file)
     for row in csv_reader:
         sku = row[0].strip()
@@ -87,7 +88,7 @@ with open(filename, errors='ignore') as csv_file:
 pp(new_cats)
 
 #write new catagories
-with open('Catagory Software\output.csv','w') as output_file:
+with open('Classic-Imports-and-Design\Catagory Software\output.csv','w') as output_file:
     output_file.truncate()
     csv_writer = csv.writer(output_file)
     csv_writer.writerows(new_cats)
