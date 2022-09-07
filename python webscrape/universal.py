@@ -10,6 +10,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 scrape_sku_file = 'python webscrape\\url-lists\\list.csv'
 
@@ -39,12 +43,16 @@ with open(scrape_sku_file, 'r') as scrape_sku_file:
     scrape_sku_reader = csv.reader(scrape_sku_file)
     scrape_sku = list(scrape_sku_reader) 
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument = {'user-data-dir' : 'C:\\Users\\Taggart\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 4'}
-
-driver = webdriver.Chrome("python webscrape\chromedriver.exe", options = chrome_options)
-
-#login
+#login to google
+options = webdriver.ChromeOptions()
+options.add_argument("--disable-extensions")
+options.add_argument('--disable-web-security')
+options.add_argument('--allow-running-insecure-content')
+options.add_argument('--profile-directory=Profile 4')
+options.add_argument('user-data-dir=C:\\scripts\\Profile 4')
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+input()
+#login to wholesale
 driver.get(wholesale_login_url)
 print("Please log into the wholesale account.")
 input()
