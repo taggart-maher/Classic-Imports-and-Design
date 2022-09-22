@@ -142,7 +142,7 @@ for product in scrape_file:
         print_table[7] = 'images...'
         print(tabulate([file_header] + [print_table]))
         print(data[6])
-        print(data[7])
+        print(data[7] + '\n')
         output_file.writerow(data)
     except:
         fails.append(product[0] + ' FAILED DUE TO UNKNOWN ERROR')
