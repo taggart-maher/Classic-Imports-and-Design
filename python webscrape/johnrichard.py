@@ -9,18 +9,18 @@ from selenium.webdriver.common.by import By
 import time
 from pprint import pprint as pp
 
-scrape_file = 'python webscrape/url-lists/johnrichard-sku.csv'
+scrape_file = 'Classic-Imports-and-Design/python webscrape/url-lists/johnrichard-sku.csv'
 login_url = 'https://www.johnrichard.com/'
 credentials = ['REGFI1','21030']
 
 with open(scrape_file) as f:
-    reader = csv.reader(f)
+    reader = csv.reader(f, delimiter=',')
     scrape_file = list(reader)
 
 writefile = open('outputfile.csv', 'w+', encoding='UTF8')
 output_file = csv.writer(writefile, delimiter=",")
 
-driver = webdriver.Chrome('python webscrape\chromedriver.exe')
+driver = webdriver.Chrome('Classic-Imports-and-Design\python webscrape\chromedriver.exe')
 
 #login
 driver.get(login_url)
@@ -36,7 +36,8 @@ fails = []
 
 itr = 1
 for product in scrape_file:
-    product = str(product[0]).split('\t')
+    product[0] = product[0].strip()
+    product[1] = product[1].strip()
     pp('Scarping product ' + product[0] + ' | Item ' +  str(itr) + ' / ' + str(len(scrape_file)))
     itr = itr + 1
     data = []
@@ -45,6 +46,7 @@ for product in scrape_file:
         driver.get('https://www.johnrichard.com/shop/' + product[0])
     except:
         fails.append(str(itr) + product[0])
+        continue
     time.sleep(2.5)
     content = driver.page_source
     soup = BeautifulSoup(content, "html.parser")
@@ -53,7 +55,11 @@ for product in scrape_file:
     #SKU
     data.append(product[0])
     #Name
-    data.append(driver.find_elements(By.XPATH, '/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[1]/div[1]/h2')[0].text) 
+    try:
+        data.append(driver.find_elements(By.XPATH, '/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[1]/div[1]/h2')[0].text) 
+    except:
+        data.append('ERROR')
+        fails.append(product[0] + ' has no name')
     #Brand
     data.append('John Richard')
     #Category
@@ -61,15 +67,17 @@ for product in scrape_file:
     #Wholesale
     try:
         data.append( driver.find_elements(By.XPATH, '/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div/div[2]/div/div/div[7]/p/span/span')[0].text.lstrip('$').replace(',',''))
-    except:
-        data.append(0)
-        fails.append(product[0] + ' has no wholesale')
     #Retail
-    data.append( round(float(data[4])*1.1*2.5) )
+        data.append( round(float(data[4])*2.5) )
+    except:
+        data.append('ERROR')
+        data.append('ERROR')
+        fails.append(product[0] + ' has no wholesale')
     #Description
     try:
         data.append( driver.find_elements(By.XPATH, '/html/body/div[1]/section[3]/div/div/div/div/div/ui-view/shopping-container/div/ui-view/shopping-one-up/div[2]/div/div[2]/div/div/div[8]/div/div/p')[0].text ) 
     except:
+        data.append('  ')
         fails.append(product[0] + ' has no description')
     #Images
     img_filenames = []
@@ -78,7 +86,7 @@ for product in scrape_file:
         img_url = "https://s3.amazonaws.com/emuncloud-staticassets/productImages/jr045/large/" + product[0] + ("" if c==1 else "_") + ("" if c==1 else str(c))
         img_url = img_url + ".jpg"
         try:
-            urllib.request.urlretrieve(img_url, "python webscrape/product-images/" + product[0] + "-" + str(c)+".jpg")
+            urllib.request.urlretrieve(img_url, "Classic-Imports-and-Design/python webscrape/product-images/" + product[0] + "-" + str(c)+".jpg")
             img_filenames.append(product[0] + "-" + str(c))
             c = c+1
         except:
@@ -94,7 +102,6 @@ for product in scrape_file:
         data.append(dimension_list[0].strip())
     except:
         fails.append(product[0] + ' has no dimensions')
-    
     pp(data)
 
     output_file.writerow(data)
